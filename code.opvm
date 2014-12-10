@@ -1,0 +1,50 @@
+//str: "%d"
+
+//[R15] <- str
+//[R15] <- 5
+//call printf
+
+
+//R15 <- 500
+//R0 <- R0 + R2 : EQ
+//R0 <- R1 + R1
+//R2 <- R0 / R4
+//while
+
+
+//calculates factorial of N
+//N in R1, returns in R0
+//fact:
+//R1 == #0
+//R0 <- 1 : EQ
+//ret : EQ
+R1 <- R1 - 1 : NE
+call fact
+ret
+
+
+
+[R15] <- 1
+R15 <- R15 + 1
+[R15] <- 2
+call F, 5
+
+
+
+
+//B while
+
+
+//R8 <- 0x100 : EQ { if (cond == EQ) = 0x100 }
+//SP <- 0xFF
+//R0 <- SP
+//SP <- SP + 10
+//R1 <- 1
+//while
+//R0 == SP
+//B endWhile : EQ
+//[R0] <- R1
+//R0 <- R0 + 1
+//R1 <- R1 + 1
+//B while
+//endWhile

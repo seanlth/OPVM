@@ -1,0 +1,78 @@
+<program> ---> <statements> {follow(<statements>)}
+
+<statements> ---> <statement> <statement-list> {R, [, B, <label>}
+
+<statement-list> ---> \n <statements> {\n}
+<statement-list> ---> eof
+
+<statement> ---> //<statement>  {//}
+<statement> ---> <primary> <operation>  {R, [}
+<statement> ---> B <label> <condition> {B}
+<statement> ---> call <label>, <num> <condition> {call}
+<statement> ---> <label> <label-value>  {<label>}
+<statement> ---> @<label> {@}
+<statement> ---> extern <label> {extern}
+<statement> ---> push <primary> <primary-list> {push}
+<statement> ---> pop <pop-arg> {pop}
+
+<pop-arg> ---> <register> <register-list>
+<pop-arg> ---> <num>
+
+<register-list> ---> , <register> <register-list>
+<register-list> ---> eps
+
+<primary-list> ---> , <list-primary> <primary-list>
+<primary-list> ---> eps
+
+<operation> ---> == <left-primary> <condition> {==}
+<operation> ---> <- <left-primary> <optional> <condition> {<-}
+
+<optional> ---> <op> <left-primary> {<op>}
+<optional> ---> eps
+
+<primary> ---> <register> {R}
+<primary> ---> [ <register> ] {[}
+
+<left-primary> ---> <register> {R}
+<left-primary> ---> <label>
+<left-primary> ---> [ <register> ] {[}
+<left-primary> ---> [ <label>] {[}
+<left-primary> ---> <num> {<num>}
+
+<primary-in-list> ---> <primary>
+<primary-in-list> ---> <num>
+
+<condition> ---> : <cond> {:}
+<condition> ---> eps
+
+<cond> ---> AL
+<cond> ---> EQ
+<cond> ---> NE
+<cond> ---> GT
+<cond> ---> LT
+<cond> ---> GE
+<cond> ---> LE
+
+<label-value> ---> : <num>
+<label-value> ---> : <string>
+<label-value> ---> eps
+
+<op> ---> +
+<op> ---> -
+<op> ---> *
+<op> ---> /
+<op> ---> >>
+<op> ---> <<
+<op> ---> |
+<op> ---> &
+<op> ---> ^
+
+
+<label> ---> [a-zA-Z]\w*
+<register> ---> R0 .. R31
+
+<num> ---> 0[b][01]+|0[x][0-9a-fA-F]+|[0-9]+
+<string> ---> " [a-zA-Z]\w* "
+
+
+
