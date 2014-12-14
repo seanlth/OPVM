@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		431D83501A3E26CB003DE4E6 /* OPVMGenerator.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 431D834E1A3E26CB003DE4E6 /* OPVMGenerator.cpp */; };
 		436857E91A043FB80010708F /* Parser.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 436857E71A043FB80010708F /* Parser.cpp */; };
 		436857EC1A043FC30010708F /* Lexer.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 436857EA1A043FC30010708F /* Lexer.cpp */; };
 		43A00F991A194AFE00340CD6 /* code in Sources */ = {isa = PBXBuildFile; fileRef = 43A00F981A194AFE00340CD6 /* code */; };
@@ -28,6 +29,8 @@
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
+		431D834E1A3E26CB003DE4E6 /* OPVMGenerator.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = OPVMGenerator.cpp; sourceTree = "<group>"; };
+		431D834F1A3E26CB003DE4E6 /* OPVMGenerator.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = OPVMGenerator.h; sourceTree = "<group>"; };
 		434E44C61A17B62800AEED3D /* code.opvm */ = {isa = PBXFileReference; lastKnownFileType = text; path = code.opvm; sourceTree = SOURCE_ROOT; };
 		436857E51A043F8B0010708F /* Grammar */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = Grammar; sourceTree = "<group>"; };
 		436857E71A043FB80010708F /* Parser.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = Parser.cpp; sourceTree = "<group>"; };
@@ -81,6 +84,8 @@
 				434E44C61A17B62800AEED3D /* code.opvm */,
 				436AEDB41A33ACCE00DEDFAD /* code1.opvm */,
 				43A00F981A194AFE00340CD6 /* code */,
+				431D834E1A3E26CB003DE4E6 /* OPVMGenerator.cpp */,
+				431D834F1A3E26CB003DE4E6 /* OPVMGenerator.h */,
 			);
 			path = OPVM_Compiler;
 			sourceTree = "<group>";
@@ -138,6 +143,7 @@
 			files = (
 				436857EC1A043FC30010708F /* Lexer.cpp in Sources */,
 				436857E91A043FB80010708F /* Parser.cpp in Sources */,
+				431D83501A3E26CB003DE4E6 /* OPVMGenerator.cpp in Sources */,
 				43A00F991A194AFE00340CD6 /* code in Sources */,
 				43FC03F219266F5A0013892C /* main.cpp in Sources */,
 			);

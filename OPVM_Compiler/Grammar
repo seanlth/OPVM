@@ -11,7 +11,7 @@
 <statement> ---> call <label>, <num> <condition> {call}
 <statement> ---> <label> <label-value>  {<label>}
 <statement> ---> @<label> {@}
-<statement> ---> extern <label> {extern}
+<statement> ---> extern <label> / <label> {extern}
 <statement> ---> push <primary> <primary-list> {push}
 <statement> ---> pop <pop-arg> {pop}
 
@@ -39,8 +39,9 @@
 <left-primary> ---> [ <label>] {[}
 <left-primary> ---> <num> {<num>}
 
-<primary-in-list> ---> <primary>
-<primary-in-list> ---> <num>
+<list-primary> ---> <primary>
+<list-primary> ---> <num>
+<list-primary> ---> <string>
 
 <condition> ---> : <cond> {:}
 <condition> ---> eps
@@ -72,7 +73,7 @@
 <register> ---> R0 .. R31
 
 <num> ---> 0[b][01]+|0[x][0-9a-fA-F]+|[0-9]+
-<string> ---> " [a-zA-Z]\w* "
+<string> ---> " [^"^\n^r]+ "
 
 
 

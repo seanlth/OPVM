@@ -28,8 +28,11 @@ enum tokens {
     //conditions
     TOKEN_AL, TOKEN_EQ, TOKEN_NE, TOKEN_GT, TOKEN_LT, TOKEN_GE, TOKEN_LE,
     
-    //other
-    TOKEN_LBRACK, TOKEN_RBRACK, TOKEN_LQUOTE, TOKEN_RQUOTE, TOKEN_COLON, TOKEN_COMMA, TOKEN_PROC, TOKEN_ARG, TOKEN_RET, TOKEN_PUSH, TOKEN_POP, TOKEN_COMMENT,
+    //symbols
+    TOKEN_COMMENT, TOKEN_LBRACK, TOKEN_RBRACK, TOKEN_LQUOTE, TOKEN_RQUOTE, TOKEN_COLON, TOKEN_COMMA, TOKEN_ARG,
+    
+    //keywords
+    TOKEN_PROC, TOKEN_RET, TOKEN_PUSH, TOKEN_POP, TOKEN_EXTERN,
     
     TOKEN_EOF, TOKEN_NEWLINE, TOKEN_NONE, TOKEN_ERROR
 };
@@ -96,6 +99,7 @@ private:
     std::string match_ret;
     std::string match_push;
     std::string match_pop;
+    std::string match_extern;
     std::string match_AL;
     std::string match_EQ;
     std::string match_NE;

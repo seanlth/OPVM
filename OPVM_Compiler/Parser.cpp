@@ -30,12 +30,16 @@ Parser::Parser(std::string input, std::string output)
         exit(-1);
     }
     
-    writeInstruction("#include <stdio.h>");
-    writeInstruction("int _C = 0;");
-    writeInstruction("unsigned long long R0, R1, R2, R3, R4, R5, R6, R7, R8, R9, R10, R11, R12, R13, R14, R15 = 0;");
-    writeInstruction("unsigned long long MEM[1000]; \n");
-    
     parse();
+    
+    for (int i = 0; i < this->includes.size(); i++) {
+        writeInstruction("#include <" + this->includes[i] + ".h>");
+    }
+    
+    writeInstruction("int _C = 0;");
+    writeInstruction("unsigned long long R0, R1, R2, R3, R4, R5, R6, R7, R8, R9, R10, R11, R12, R13, R14 = 0;");
+    writeInstruction("unsigned long long R15 = 3;");
+    writeInstruction("unsigned long long MEM[1000];\n");
     
     for (int i = 0; i < this->instructions.size(); i++) {
         writeInstruction(this->instructions[i]);
@@ -77,7 +81,7 @@ std::string Parser::instructionMoveToString(Instruction instruction)
             instructionString += "R" + std::to_string(instruction.dest.value) + " = ";
             break;
         case OPERAND_ACCESS:
-            instructionString += "MEM[ R" + std::to_string(instruction.dest.value) + " - " + std::to_string(instruction.dest.offset) + " ] = ";
+            instructionString += "MEM[ R" + std::to_string(instruction.dest.value) + " + " + std::to_string(instruction.dest.offset) + " ] = ";
             break;
         default:
             break;
@@ -88,7 +92,7 @@ std::string Parser::instructionMoveToString(Instruction instruction)
             instructionString += "R" + std::to_string(instruction.src1.value);
             break;
         case OPERAND_ACCESS:
-            instructionString += "MEM[ R" + std::to_string(instruction.src1.value) + " - " + std::to_string(instruction.src1.offset) + " ]";
+            instructionString += "MEM[ R" + std::to_string(instruction.src1.value) + " + " + std::to_string(instruction.src1.offset) + " ]";
             break;
         case OPERAND_NUM:
             instructionString += std::to_string(instruction.src1.value);
@@ -107,7 +111,7 @@ std::string Parser::instructionMoveToString(Instruction instruction)
                 instructionString += "R" + std::to_string(instruction.src2.value);
                 break;
             case OPERAND_ACCESS:
-                instructionString += "MEM[ R" + std::to_string(instruction.src2.value) + " - " + std::to_string(instruction.src2.offset) + " ]";
+                instructionString += "MEM[ R" + std::to_string(instruction.src2.value) + " + " + std::to_string(instruction.src2.offset) + " ]";
                 break;
             case OPERAND_NUM:
                 instructionString += std::to_string(instruction.src2.value) + "";
@@ -130,7 +134,7 @@ std::string Parser::instructionCompareToString(Instruction instruction)
             instructionString += "R" + std::to_string(instruction.dest.value);
             break;
         case OPERAND_ACCESS:
-            instructionString += "MEM[ R" + std::to_string(instruction.dest.value) + " - " + std::to_string(instruction.dest.offset) + " ]";
+            instructionString += "MEM[ R" + std::to_string(instruction.dest.value) + " + " + std::to_string(instruction.dest.offset) + " ]";
             break;
         default:
             break;
@@ -145,7 +149,7 @@ std::string Parser::instructionCompareToString(Instruction instruction)
             instructionString += "R" + std::to_string(instruction.src1.value);
             break;
         case OPERAND_ACCESS:
-            instructionString += "MEM[ R" + std::to_string(instruction.src1.value) + " - " + std::to_string(instruction.src1.offset) + " ]";
+            instructionString += "MEM[ R" + std::to_string(instruction.src1.value) + " + " + std::to_string(instruction.src1.offset) + " ]";
             break;
         case OPERAND_NUM:
             instructionString += std::to_string(instruction.src1.value) + "";
@@ -184,10 +188,13 @@ std::string Parser::instructionPushToString(Instruction instruction)
                 instructionString += "R" + std::to_string(instruction.list[i].value) + ";";
                 break;
             case OPERAND_ACCESS:
-                instructionString += "MEM[ R" + std::to_string(instruction.list[i].value) + " - " + std::to_string(instruction.list[i].offset) + " ];";
+                instructionString += "MEM[ R" + std::to_string(instruction.list[i].value) + " + " + std::to_string(instruction.list[i].offset) + " ];";
                 break;
             case OPERAND_NUM:
                 instructionString += std::to_string(instruction.list[i].value) + ";";
+                break;
+            case OPERAND_STRING:
+                instructionString += "(unsigned long long)" + instruction.list[i].str + ";";
                 break;
 
             default:
@@ -212,7 +219,7 @@ std::string Parser::instructionPopToString(Instruction instruction)
                 instructionString += "R" + std::to_string(instruction.dest.value) + ";";
                 break;
             case OPERAND_ACCESS:
-                instructionString += "MEM[ R" + std::to_string(instruction.dest.value) + " - " + std::to_string(instruction.dest.offset) + " ];";
+                instructionString += "MEM[ R" + std::to_string(instruction.dest.value) + " + " + std::to_string(instruction.dest.offset) + " ];";
                 break;
             case OPERAND_NUM:
                 instructionString += std::to_string(instruction.src1.value);
@@ -256,6 +263,9 @@ void Parser::writeInstruction(Instruction instruction)
         no_semi_colon = true;
     }
     else if ( instruction.type == INSTRUCTION_RET ) {
+        ins += "int __obp = MEM[R15 - 1];\n";
+        ins += "R15 = R14;\n";
+        ins += "R14 = __obp;\n";
         ins += "return 0";
         if ( instruction.condition.tok == TOKEN_NONE ) {
             ins += ";\n}\n";
@@ -263,23 +273,32 @@ void Parser::writeInstruction(Instruction instruction)
         }
     }
     else if ( instruction.type == INSTRUCTION_CALL ) {
+        bool xtern = isExtern(instruction.label);
+        
         std::string s = "";
-        //pop stack
-        if (instruction.src1.value > 1) {
-            s += "R15 = R15 - " + std::to_string( instruction.src1.value ) + ";\n";
+        
+        if (!xtern) {
+            writeInstruction("MEM[ R15++ ] = R14;");
+            writeInstruction("R14 = R15 - " + std::to_string( instruction.src1.value ) + " - 1;" );
+        }
+        if (xtern) {
+            if (instruction.src1.value >= 1) {
+                s += "R15 = R15 - " + std::to_string( instruction.src1.value ) + ";\n";
+            }
         }
         
         s += instruction.label + "(";
-        
-        if (isExtern(instruction.label)) {
+        if (xtern) {
+            
             for (int i = 0; i < instruction.src1.value; i++) {
-                s += "MEM[ R15" + std::to_string( i ) + " ];";
+                s += "MEM[ R15 + " + std::to_string( i ) + " ]";
                 if (i < instruction.src1.value-1) {
                     s += ", ";
                 }
             }
         }
         s += ")";
+        
         ins = s;
     }
     else if ( instruction.type == INSTRUCTION_BRANCH ) {
@@ -337,6 +356,7 @@ void Parser::parseStatementList()
 void Parser::parseStatement()
 {
     if ( getCurrentToken(this->currentToken).tok == TOKEN_COMMENT ) {
+        currentToken++;
         return;
     }
     else if ( getCurrentToken(this->currentToken).tok == TOKEN_REG || getCurrentToken(this->currentToken).tok == TOKEN_ACCESS) {
@@ -370,8 +390,6 @@ void Parser::parseStatement()
         this->currentInstruction.type = INSTRUCTION_LABEL;
         
         parseLabel();
-        
-        this->currentToken++;
         parseLabelValue();
         this->instructions.push_back(this->currentInstruction);
         this->currentInstruction = Instruction();
@@ -414,8 +432,19 @@ void Parser::parseStatement()
         
         this->instructions.push_back(this->currentInstruction);
         this->currentInstruction = Instruction();
-        
     }
+    else if ( getCurrentToken(this->currentToken).tok == TOKEN_EXTERN ) {
+        this->currentInstruction.type = INSTRUCTION_EXTERN;
+        
+        this->currentToken++;
+        parseExtern();
+        
+        this->includes.push_back( this->currentInstruction.label );
+        this->externs.push_back( this->currentInstruction.src1.str );
+        
+        this->currentInstruction = Instruction();
+    }
+
     else if ( getCurrentToken(this->currentToken).tok == TOKEN_NEWLINE ) {
         this->currentInstruction = Instruction();
         parseStatementList();
@@ -468,8 +497,14 @@ void Parser::parseListPrimary()
         t.type = OPERAND_NUM;
         this->currentInstruction.list.push_back(t);
     }
+    else if ( getCurrentToken(this->currentToken).tok == TOKEN_STRING ) {
+        Operand t;
+        t.str = getCurrentToken(this->currentToken).str;
+        t.type = OPERAND_STRING;
+        this->currentInstruction.list.push_back(t);
+    }
     else {
-        std::cout << "Expected register, access or number, found " << getCurrentToken(this->currentToken).str << std::endl;
+        std::cout << "Expected register, access, number or string, found " << getCurrentToken(this->currentToken).str << std::endl;
         exit(1);
     }
     this->currentToken++;
@@ -574,23 +609,29 @@ void Parser::parseLabelValue()
         if ( getCurrentToken(this->currentToken).tok == TOKEN_NUM ) {
             this->currentInstruction.dest.value = getCurrentToken(this->currentToken).value;
             this->currentInstruction.dest.type = OPERAND_NUM;
+            this->currentToken++;
         }
         else if ( getCurrentToken(this->currentToken).tok == TOKEN_STRING ) {
             this->currentInstruction.dest.str = getCurrentToken(this->currentToken).str;
             this->currentInstruction.dest.type = OPERAND_STRING;
-        }
-        else {
-            std::cout << "Expected number or string, found " << getCurrentToken(this->currentToken).str << std::endl;
-            exit(1);
+            this->currentToken++;
         }
     }
-    this->currentToken++;
+    else {
+        std::cout << "Expected ':', found " << getCurrentToken(this->currentToken).str << std::endl;
+        exit(1);
+    }
 }
 
 void Parser::parseLabel()
 {
     if (this->getCurrentToken(this->currentToken).tok == TOKEN_LABEL) {
-        this->currentInstruction.label = getCurrentToken(this->currentToken).str;
+        if (this->currentInstruction.label.compare("") == 0) {
+            this->currentInstruction.label = getCurrentToken(this->currentToken).str;
+        }
+        else {
+            this->currentInstruction.src1.str = getCurrentToken(this->currentToken).str;
+        }
         
         for (int i = 0; i < this->keywords.size(); i++) {
             if ( this->currentInstruction.label.compare(this->keywords[i]) == 0) {
@@ -672,6 +713,18 @@ void Parser::parseList()
     }
 }
 
+void Parser::parseExtern()
+{
+    parseLabel();
+    if ( this->getCurrentToken(this->currentToken).tok == TOKEN_DIV ) {
+        this->currentToken++;
+        parseLabel();
+    }
+    else {
+        std::cout << "Expected '/', found " << getCurrentToken(this->currentToken).str << std::endl;
+        exit(1);
+    }
+}
 
 
 

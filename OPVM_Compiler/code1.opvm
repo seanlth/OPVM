@@ -1,4 +1,48 @@
-@main
-push 4, 5, 6, 10, 100, 0x100
-R1 <- 0
+extern stdio/printf
+
+//calculates factorial of N
+//returns in R0
+@f
+
+//f 0 = 1
+
+&0 == 0
+R0 <- 1 : EQ
+ret : EQ
+
+//f n = n * f (n - 1)
+
+R0 <- &0 - 1
+push R0
+call f, 1
+R0 <- &0 * R0
 ret
+
+
+
+@func
+R0 <- &0 + &1
+ret
+
+@main
+
+
+
+push "%d %d %d\n", 5, 6, 7
+call printf, 4
+
+push 3, 4
+call func, 2
+
+push "%d\n", R0
+call printf, 2
+
+push 4
+call f, 1
+
+push "%d\n", R0
+call printf, 2
+
+ret
+
+

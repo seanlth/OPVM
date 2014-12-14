@@ -23,7 +23,7 @@ match_mul ("\\*"),
 match_div ("\\/"),
 match_call ("call"),
 match_branch ("B"),
-match_string ("\"[a-zA-Z]+\""),
+match_string ("\"[^\"^\n^r]+\""),
 match_colon (":"),
 match_comma (","),
 match_proc ("@"),
@@ -31,6 +31,7 @@ match_push ("push"),
 match_pop ("pop"),
 match_arg ("&[1-9][0-9]+"),
 match_ret ("ret"),
+match_extern ("extern"),
 match_AL("AL"),
 match_EQ("EQ"),
 match_NE("NE"),
@@ -61,7 +62,7 @@ match_mul ("\\*"),
 match_div ("\\/"),
 match_call ("call"),
 match_branch ("B"),
-match_string ("\"[a-zA-Z]+\""),
+match_string ("\"[^\"^\n^r]+\""),
 match_colon (":"),
 match_comma (","),
 match_proc ("@"),
@@ -69,6 +70,7 @@ match_push ("push"),
 match_pop ("pop"),
 match_arg ("&[0-9]+"),
 match_ret ("ret"),
+match_extern ("extern"),
 match_AL("AL"),
 match_EQ("EQ"),
 match_NE("NE"),
@@ -115,9 +117,7 @@ std::vector<std::string> Lexer::getStringTokens(std::string str)
 {
     std::vector<std::string> toks;
     
-    std::string reg = match_newline + "|" + match_whitespace+ "|" +  match_reg + "|" + match_access + "|" + match_comment + "|" + match_cmp + "|" + match_pipe + "|" + match_add + "|" + match_sub + "|" + match_mul + "|" + match_div + "|" + match_call + match_branch + "|" + match_string + "|" + match_comma + "|" + match_colon + "|" + match_proc + "|" + match_arg + "|" + match_ret + "|" + match_push + "|" + match_pop + "|" + match_AL + "|" + match_EQ + "|" + match_NE + "|" + match_GT + "|" + match_LT + "|" + match_GE + "|" + match_LE + "|" + match_label + "|" + match_binary + "|" + match_hex + "|" + match_dec + "|" + match_error;
-    
-    //std::regex r("\\n|\\s+|\\/\\/.*|\\[R[1-9][0-9]\\]|R[1-9][0-9]|\\[R[0-9]\\]|R[0-9]|\\<\\-|\\+|\\*|\\/|AL|EQ|NE|GT|LT|GE|LE|B|\"[a-zA-Z]+\"|:|[a-zA-Z]+|0[b][01]+|0[x][0-9a-fA-F]+|[0-9]+|.+");
+    std::string reg = match_newline + "|" + match_whitespace+ "|" +  match_reg + "|" + match_access + "|" + match_comment + "|" + match_cmp + "|" + match_pipe + "|" + match_add + "|" + match_sub + "|" + match_mul + "|" + match_div + "|" + match_call + match_branch + "|" + match_string + "|" + match_comma + "|" + match_colon + "|" + match_proc + "|" + match_arg + "|" + match_ret + "|" + match_push + "|" + match_pop + "|" + match_extern + "|" + match_AL + "|" + match_EQ + "|" + match_NE + "|" + match_GT + "|" + match_LT + "|" + match_GE + "|" + match_LE + "|" + match_label + "|" + match_binary + "|" + match_hex + "|" + match_dec + "|" + match_error;
     
     std::regex r(reg);
     
@@ -210,7 +210,7 @@ void Lexer::tokenise(std::vector<std::string> assembly)
             }
             else if (std::regex_match(x, std::regex(match_arg))) {
                 std::string offset(x.begin()+1, x.end());
-                tok = Token(TOKEN_ACCESS, "[R15]", 15, atoi(offset.c_str()));
+                tok = Token(TOKEN_ACCESS, "[R14]", 14, atoi(offset.c_str()));
                 toks.push_back(tok);
             }
             else if (std::regex_match(x, std::regex(match_ret))) {
@@ -223,6 +223,10 @@ void Lexer::tokenise(std::vector<std::string> assembly)
             }
             else if (std::regex_match(x, std::regex(match_pop))) {
                 tok = Token(TOKEN_POP, x);
+                toks.push_back(tok);
+            }
+            else if (std::regex_match(x, std::regex(match_extern))) {
+                tok = Token(TOKEN_EXTERN, x);
                 toks.push_back(tok);
             }
             else if (std::regex_match(x, std::regex(match_AL))) {

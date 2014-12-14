@@ -15,7 +15,7 @@
 
 
 enum InstructionType {
-    INSTRUCTION_BRANCH, INSTRUCTION_CALL, INSTRUCTION_RET, INSTRUCTION_PROC, INSTRUCTION_COMPARE, INSTRUCTION_MOVE, INSTRUCTION_LABEL, INSTRUCTION_PUSH, INSTRUCTION_POP
+    INSTRUCTION_BRANCH, INSTRUCTION_CALL, INSTRUCTION_RET, INSTRUCTION_PROC, INSTRUCTION_COMPARE, INSTRUCTION_MOVE, INSTRUCTION_LABEL, INSTRUCTION_PUSH, INSTRUCTION_POP, INSTRUCTION_EXTERN
 };
 
 enum OperandType {
@@ -28,7 +28,7 @@ struct Operand {
     std::string str;
     OperandType type;
     
-    Operand() { this->type = OPERAND_NONE; }
+    Operand() { this->type = OPERAND_NONE; this->str = ""; }
     
 };
 
@@ -51,6 +51,7 @@ struct Instruction {
 
 class Parser {
 private:
+    std::vector<std::string> includes;
     std::vector<std::string> externs;
     std::vector<std::string> keywords;
     std::vector<Instruction> instructions;
@@ -78,6 +79,7 @@ private:
     void parsePush();
     void parsePop();
     void parseList();
+    void parseExtern();
 
 
 
