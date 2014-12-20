@@ -9,6 +9,7 @@
 #include <iostream>
 #include "Parser.h"
 #include <regex>
+#include <string.h>
 
 
 int main(int argc, const char * argv[])
