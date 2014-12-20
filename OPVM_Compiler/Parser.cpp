@@ -11,6 +11,7 @@
 
 Parser::Parser()
 {
+
     this->currentToken = 0;
 }
 
