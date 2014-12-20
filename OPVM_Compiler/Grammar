@@ -56,7 +56,11 @@
 
 <label-value> ---> : <num>
 <label-value> ---> : <string>
+<label-value> ---> : { <num-list> }
 <label-value> ---> eps
+
+<num-list> ---> <num><num-list>
+<num-list> ---> eps
 
 <op> ---> +
 <op> ---> -

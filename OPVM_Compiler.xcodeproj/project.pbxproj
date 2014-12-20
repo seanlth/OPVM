@@ -10,6 +10,7 @@
 		431D83501A3E26CB003DE4E6 /* OPVMGenerator.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 431D834E1A3E26CB003DE4E6 /* OPVMGenerator.cpp */; };
 		436857E91A043FB80010708F /* Parser.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 436857E71A043FB80010708F /* Parser.cpp */; };
 		436857EC1A043FC30010708F /* Lexer.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 436857EA1A043FC30010708F /* Lexer.cpp */; };
+		436F95C21A46218F00C6C339 /* makefile in Sources */ = {isa = PBXBuildFile; fileRef = 436F95C11A46218F00C6C339 /* makefile */; };
 		43A00F991A194AFE00340CD6 /* code in Sources */ = {isa = PBXBuildFile; fileRef = 43A00F981A194AFE00340CD6 /* code */; };
 		43FC03F219266F5A0013892C /* main.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 43FC03F119266F5A0013892C /* main.cpp */; };
 		43FC03F419266F5A0013892C /* OPVM_Compiler.1 in CopyFiles */ = {isa = PBXBuildFile; fileRef = 43FC03F319266F5A0013892C /* OPVM_Compiler.1 */; };
@@ -38,6 +39,7 @@
 		436857EA1A043FC30010708F /* Lexer.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = Lexer.cpp; sourceTree = "<group>"; };
 		436857EB1A043FC30010708F /* Lexer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Lexer.h; sourceTree = "<group>"; };
 		436AEDB41A33ACCE00DEDFAD /* code1.opvm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = code1.opvm; sourceTree = "<group>"; };
+		436F95C11A46218F00C6C339 /* makefile */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.make; name = makefile; path = ../makefile; sourceTree = "<group>"; };
 		43A00F981A194AFE00340CD6 /* code */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = code; sourceTree = SOURCE_ROOT; };
 		43FC03EE19266F5A0013892C /* OPVM_Compiler */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = OPVM_Compiler; sourceTree = BUILT_PRODUCTS_DIR; };
 		43FC03F119266F5A0013892C /* main.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = main.cpp; sourceTree = "<group>"; };
@@ -86,6 +88,7 @@
 				43A00F981A194AFE00340CD6 /* code */,
 				431D834E1A3E26CB003DE4E6 /* OPVMGenerator.cpp */,
 				431D834F1A3E26CB003DE4E6 /* OPVMGenerator.h */,
+				436F95C11A46218F00C6C339 /* makefile */,
 			);
 			path = OPVM_Compiler;
 			sourceTree = "<group>";
@@ -143,6 +146,7 @@
 			files = (
 				436857EC1A043FC30010708F /* Lexer.cpp in Sources */,
 				436857E91A043FB80010708F /* Parser.cpp in Sources */,
+				436F95C21A46218F00C6C339 /* makefile in Sources */,
 				431D83501A3E26CB003DE4E6 /* OPVMGenerator.cpp in Sources */,
 				43A00F991A194AFE00340CD6 /* code in Sources */,
 				43FC03F219266F5A0013892C /* main.cpp in Sources */,

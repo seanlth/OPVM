@@ -75,7 +75,7 @@ int main(int argc, const char * argv[])
 
     if (compile) {
         dest += ".c";
-        std::string command = "clang " + dest + " -o " + oldDest + "2> /dev/null";
+        std::string command = "clang " + dest + " -o " + oldDest + " 2> /dev/null";
         
         std::cout << command << std::endl;
         
