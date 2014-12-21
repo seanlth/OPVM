@@ -60,7 +60,6 @@ private:
     std::vector<Token> tokens;
     int currentToken;
     
-    std::ofstream f;
     std::string file;
     
     void parseStatements();
@@ -86,8 +85,8 @@ private:
     
     
     Token getCurrentToken(int currentToken);
-    void writeInstruction(std::string instruction);
-    void writeInstruction(Instruction instruction);
+    void writeInstruction(std::string instruction, std::ofstream &f);
+    void writeInstruction(Instruction instruction, std::ofstream &f);
     bool isExtern(std::string label);
     
     
@@ -100,8 +99,6 @@ private:
 public:
     Parser();
     Parser(std::string input, std::string output);
-    Parser(Parser&);
-    void operator= (Parser&);
 
     
     void parse();

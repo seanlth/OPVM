@@ -11,12 +11,13 @@
 
 Parser::Parser()
 {
-
     this->currentToken = 0;
 }
 
 Parser::Parser(std::string input, std::string output)
 {
+    std::ofstream f;
+
     this->keywords = {"auto", "break", "case", "char" "const", "continue", "default", "do", "double", "else", "enum", "extern", "float", "for", "goto", "if", "int", "long", "register", "return", "short", "signed", "sizeof", "static", "struct", "switch", "typedef", "union", "unsigned", "void", "volatile", "while, ret" };
     
     
@@ -34,16 +35,16 @@ Parser::Parser(std::string input, std::string output)
     parse();
     
     for (int i = 0; i < this->includes.size(); i++) {
-        writeInstruction("#include <" + this->includes[i] + ".h>");
+        writeInstruction("#include <" + this->includes[i] + ".h>", f);
     }
     
-    writeInstruction("int _C = 0;");
-    writeInstruction("unsigned long long R0, R1, R2, R3, R4, R5, R6, R7, R8, R9, R10, R11, R12, R13, R14 = 0;");
-    writeInstruction("unsigned long long R15 = 3;");
-    writeInstruction("unsigned long long MEM[1000];\n");
+    writeInstruction("int _C = 0;", f);
+    writeInstruction("unsigned long long R0, R1, R2, R3, R4, R5, R6, R7, R8, R9, R10, R11, R12, R13, R14 = 0;", f);
+    writeInstruction("unsigned long long R15 = 3;", f);
+    writeInstruction("unsigned long long MEM[1000];\n", f);
     
     for (int i = 0; i < this->instructions.size(); i++) {
-        writeInstruction(this->instructions[i]);
+        writeInstruction(this->instructions[i], f);
     }
     
     f.close();
@@ -235,12 +236,12 @@ std::string Parser::instructionPopToString(Instruction instruction)
 }
 
 
-void Parser::writeInstruction(std::string instruction)
+void Parser::writeInstruction(std::string instruction, std::ofstream &f)
 {
     f << instruction << std::endl;
 }
 
-void Parser::writeInstruction(Instruction instruction)
+void Parser::writeInstruction(Instruction instruction, std::ofstream &f)
 {
     bool no_semi_colon = false;
     std::string ins = "";
@@ -279,8 +280,8 @@ void Parser::writeInstruction(Instruction instruction)
         std::string s = "";
         
         if (!xtern) {
-            writeInstruction("MEM[ R15++ ] = R14;");
-            writeInstruction("R14 = R15 - " + std::to_string( instruction.src1.value ) + " - 1;" );
+            writeInstruction("MEM[ R15++ ] = R14;", f);
+            writeInstruction("R14 = R15 - " + std::to_string( instruction.src1.value ) + " - 1;", f );
         }
         if (xtern) {
             if (instruction.src1.value >= 1) {
@@ -316,15 +317,15 @@ void Parser::writeInstruction(Instruction instruction)
     
     if (instruction.condition.tok == TOKEN_NONE) {
         if (no_semi_colon) {
-            writeInstruction(ins);
+            writeInstruction(ins, f);
         }
         else {
-            writeInstruction(ins + ";");
+            writeInstruction(ins + ";", f);
         }
     }
     else {
         std::string conditionString = "if (_C " + instruction.condition.str + " 0) { " + ins + "; }";
-        writeInstruction(conditionString);
+        writeInstruction(conditionString, f);
     }
 }
 
