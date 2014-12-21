@@ -97,11 +97,11 @@ private:
     std::string instructionPushToString(Instruction instruction);
     std::string instructionPopToString(Instruction instruction);
 
-    Parser& operator=(const Parser&);
-
 public:
     Parser();
     Parser(std::string input, std::string output);
+    Parser(Parser&);
+    void operator= (Parser&);
 
     
     void parse();
